@@ -1,0 +1,25 @@
+#! /user/bin/env python
+
+"""beret
+
+Usage:
+  beret <in_filename> <out_filename> <username> <apikey> <uri> <model_name>
+  beret (-h | --help)
+  beret --version
+
+Options:
+  -h --help     Show this message.
+  --version     Show version.
+"""
+
+from docopt import docopt
+from beret import score
+import re
+
+args = docopt(__doc__,version='beret 0.1.0')
+func_args = {}
+for key,val in args.iteritems():
+    if re.match(r'^<.+>$',key):
+        func_args[key.strip("<>")] = val
+
+score(**func_args)

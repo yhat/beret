@@ -1,0 +1,4 @@
+.pypirc
+*egg-info
+build
+dist
