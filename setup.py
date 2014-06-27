@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name="beret",
-    version="0.2.0",
+    version="0.2.1",
     author="Eric Chiang",
     author_email="info@yhathq.com",
     url="https://github.com/yhat/beret",
