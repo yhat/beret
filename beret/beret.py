@@ -2,13 +2,14 @@
 import json
 import sys
 from StringIO import StringIO
+import time
 
 import pandas as pd
 import requests
 from yhat import df_to_json
 
 def log_to_user(status,msg):
-    print json.dumps({"status":status,"msg":msg})
+    print json.dumps({"status":status,"msg":msg,"time":time.strftime("%Y:%m:%d %H:%M:%S",time.gmtime())})
     sys.stdout.flush()
     if status == "ERROR":
         sys.exit(2)

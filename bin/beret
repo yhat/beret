@@ -16,7 +16,7 @@ from docopt import docopt
 from beret import score
 import re
 
-args = docopt(__doc__,version='beret 0.2.1')
+args = docopt(__doc__,version='beret 0.2.2')
 func_args = {}
 for key,val in args.iteritems():
     if re.match(r'^<.+>$',key):
