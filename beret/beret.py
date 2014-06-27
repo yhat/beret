@@ -4,7 +4,8 @@ import sys
 from StringIO import StringIO
 
 import pandas as pd
-from yhat import Yhat
+import requests
+from yhat import df_to_json
 
 def log_to_user(status,msg):
     print json.dumps({"status":status,"msg":msg})
@@ -12,10 +13,15 @@ def log_to_user(status,msg):
     if status == "ERROR":
         sys.exit(2)
 
-def make_pred(lines,header, response_header, model_name, yh, out_file):
+def make_pred(lines,header, response_header, endpoint, auth, out_file):
     csv_string = header + ''.join(lines)
     df = pd.read_csv(StringIO(csv_string))
-    result = yh.predict(model_name,df)
+    res = requests.post(endpoint,auth=auth,
+                        data=df_to_json(df),
+                        headers={'content-type':'application/json'})
+    if res.status_code != 200:
+        log_to_user("ERROR","Could not connect to model")
+    result = res.json()
     if 'result' not in result:
         log_to_user("ERROR",result)
     df = pd.DataFrame(result['result'])
@@ -30,12 +36,9 @@ def make_pred(lines,header, response_header, model_name, yh, out_file):
     return response_header
 
 
-def score(in_filename, out_filename, username, apikey, uri, model_name):
+def score(in_filename, out_filename, username, apikey, endpoint):
     response_header = None
-    try:
-        yh = Yhat(username,apikey,uri)
-    except:
-        log_to_user("ERROR","bad yhat credentials")
+    auth=(username,apikey)
     try:
         num_lines = sum(1 for line in open(in_filename))
 
@@ -50,15 +53,14 @@ def score(in_filename, out_filename, username, apikey, uri, model_name):
             read_lines.append(in_file.readline())
             if len(read_lines) >= 100:
                 response_header = make_pred(read_lines,header,
-                                            response_header,model_name,
-                                            yh,out_file)
+                                            response_header,endpoint,
+                                            auth,out_file)
                 log_to_user("UPDATE","%.0f" % ((i / float(num_lines)) * 100))
                 read_lines = []
         
         read_lines.extend(in_file.readlines())
-        make_pred(read_lines,header,response_header,model_name,yh,out_file)
+        make_pred(read_lines,header,response_header,endpoint,auth,out_file)
         log_to_user("UPDATE","100")
-        log_to_user("DONE","All done!")
         
     except Exception as e:
         log_to_user("ERROR",str(e))

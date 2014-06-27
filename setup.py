@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name="beret",
-    version="0.1.0",
+    version="0.2.0",
     author="Eric Chiang",
     author_email="info@yhathq.com",
     url="https://github.com/yhat/beret",
@@ -14,6 +14,7 @@ setup(
     install_requires=[
         "docopt>=0.6.1",
         "pandas==0.13.0",
+        "requests>=2.3.0",
         "yhat>=1.0.0"
     ]
 )

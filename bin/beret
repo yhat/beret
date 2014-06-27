@@ -3,7 +3,7 @@
 """beret
 
 Usage:
-  beret <in_filename> <out_filename> <username> <apikey> <uri> <model_name>
+  beret <in_filename> <out_filename> <username> <apikey> <endpoint>
   beret (-h | --help)
   beret --version
 
@@ -16,7 +16,7 @@ from docopt import docopt
 from beret import score
 import re
 
-args = docopt(__doc__,version='beret 0.1.0')
+args = docopt(__doc__,version='beret 0.2.0')
 func_args = {}
 for key,val in args.iteritems():
     if re.match(r'^<.+>$',key):
